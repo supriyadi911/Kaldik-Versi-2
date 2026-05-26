@@ -50,9 +50,6 @@
     <!-- SheetJS untuk Export Excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-    <!-- html2pdf untuk Export PDF Resmi -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
     <style>
         /* Gaya Kustom & Scrollbar */
         body { font-family: 'Inter', sans-serif; }
@@ -134,23 +131,31 @@
                 <a href="#" onclick="switchView('dashboard')" id="nav-dashboard" class="nav-item flex items-center px-6 py-3 text-sm font-medium bg-blue-800 text-brand-gold border-r-4 border-brand-gold">
                     <i class="fas fa-chart-pie w-6"></i> Dashboard
                 </a>
-                <a href="#" onclick="switchView('calendar')" id="nav-calendar" class="nav-item flex items-center px-6 py-3 text-sm font-medium text-gray-300 hover:bg-blue-800 hover:text-white transition-colors">
-                    <i class="fas fa-calendar-alt w-6"></i> Kalender Akademik
+                <a href="#" onclick="switchView('calendar')" id="nav-calendar" class="nav-item flex items-center justify-between px-6 py-3 text-sm font-medium text-gray-300 hover:bg-blue-800 hover:text-white transition-colors">
+                    <div class="flex items-center"><i class="fas fa-calendar-alt w-6"></i> Kalender Akademik</div>
+                    <i class="fas fa-lock text-xs text-gray-500 auth-lock"></i>
                 </a>
                 <a href="#" onclick="switchView('matrix')" id="nav-matrix" class="nav-item flex items-center px-6 py-3 text-sm font-medium text-gray-300 hover:bg-blue-800 hover:text-white transition-colors">
                     <i class="fas fa-table w-6"></i> Matrik Kalender
                 </a>
-                <a href="#" onclick="switchView('agenda')" id="nav-agenda" class="nav-item flex items-center px-6 py-3 text-sm font-medium text-gray-300 hover:bg-blue-800 hover:text-white transition-colors">
-                    <i class="fas fa-list-check w-6"></i> Manajemen Agenda
+                <a href="#" onclick="switchView('agenda')" id="nav-agenda" class="nav-item flex items-center justify-between px-6 py-3 text-sm font-medium text-gray-300 hover:bg-blue-800 hover:text-white transition-colors">
+                    <div class="flex items-center"><i class="fas fa-list-check w-6"></i> Manajemen Agenda</div>
+                    <i class="fas fa-lock text-xs text-gray-500 auth-lock"></i>
                 </a>
                 <a href="#" onclick="switchView('stats')" id="nav-stats" class="nav-item flex items-center px-6 py-3 text-sm font-medium text-gray-300 hover:bg-blue-800 hover:text-white transition-colors">
                     <i class="fas fa-chart-bar w-6"></i> Statistik Hari Efektif
                 </a>
-                <a href="#" onclick="switchView('cetak-resmi')" id="nav-cetak-resmi" class="nav-item flex items-center px-6 py-3 text-sm font-medium text-gray-300 hover:bg-blue-800 hover:text-white transition-colors">
-                    <i class="fas fa-print w-6"></i> Cetak Resmi
+                <a href="#" onclick="switchView('cetak-resmi')" id="nav-cetak-resmi" class="nav-item flex items-center justify-between px-6 py-3 text-sm font-medium text-gray-300 hover:bg-blue-800 hover:text-white transition-colors">
+                    <div class="flex items-center"><i class="fas fa-print w-6"></i> Cetak Resmi</div>
+                    <i class="fas fa-lock text-xs text-gray-500 auth-lock"></i>
                 </a>
-                <a href="#" onclick="switchView('settings')" id="nav-settings" class="nav-item flex items-center px-6 py-3 text-sm font-medium text-gray-300 hover:bg-blue-800 hover:text-white transition-colors">
-                    <i class="fas fa-cog w-6"></i> Pengaturan Sekolah
+                <a href="#" onclick="switchView('settings')" id="nav-settings" class="nav-item flex items-center justify-between px-6 py-3 text-sm font-medium text-gray-300 hover:bg-blue-800 hover:text-white transition-colors">
+                    <div class="flex items-center"><i class="fas fa-cog w-6"></i> Pengaturan Sekolah</div>
+                    <i class="fas fa-lock text-xs text-gray-500 auth-lock"></i>
+                </a>
+                <!-- MENU ADMIN ONLY -->
+                <a href="#" onclick="switchView('users')" id="nav-users" class="nav-item hidden items-center justify-between px-6 py-3 text-sm font-medium text-gray-300 hover:bg-blue-800 hover:text-white transition-colors">
+                    <div class="flex items-center"><i class="fas fa-users-cog w-6"></i> Manajemen User</div>
                 </a>
             </nav>
             <div class="p-4 text-xs text-center text-blue-400 border-t border-blue-800">
@@ -186,6 +191,22 @@
                     </div>
                     <div class="flex items-center text-sm font-bold text-brand-blue bg-blue-50 px-3 py-1 rounded-full">
                         <i class="far fa-clock mr-2"></i> <span id="realtime-clock">00:00:00</span>
+                    </div>
+                    
+                    <!-- Login / User Info -->
+                    <div id="auth-section" class="flex items-center ml-2 border-l pl-4">
+                        <button id="btn-login" onclick="openLoginModal()" class="text-sm bg-brand-blue text-white px-4 py-1.5 rounded shadow hover:bg-blue-700 transition">
+                            <i class="fas fa-sign-in-alt mr-1"></i> Login
+                        </button>
+                        <div id="user-info" class="hidden items-center space-x-3">
+                            <div class="text-right hidden sm:block">
+                                <p class="text-xs font-bold text-gray-800 leading-tight" id="auth-username">User</p>
+                                <p class="text-[10px] text-gray-500 leading-tight" id="auth-role">Role</p>
+                            </div>
+                            <button onclick="handleLogout()" class="text-red-500 hover:text-red-700 bg-red-50 p-1.5 rounded" title="Logout">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </header>
@@ -303,9 +324,6 @@
                         <div class="flex gap-2 flex-wrap">
                             <button onclick="openAgendaModal()" class="bg-brand-blue text-white px-4 py-2 rounded shadow-sm hover:bg-blue-700 transition whitespace-nowrap">
                                 <i class="fas fa-plus mr-1"></i> Agenda
-                            </button>
-                            <button onclick="downloadPDF('calendar')" class="bg-red-600 text-white px-4 py-2 rounded shadow-sm hover:bg-red-700 transition whitespace-nowrap">
-                                <i class="fas fa-file-pdf mr-1"></i> Unduh PDF
                             </button>
                             <button onclick="window.print()" class="bg-gray-800 text-white px-4 py-2 rounded shadow-sm hover:bg-gray-700 transition whitespace-nowrap">
                                 <i class="fas fa-print mr-1"></i> Cetak
@@ -469,9 +487,6 @@
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 no-print gap-4">
                         <p class="text-gray-600 text-sm md:text-base">Format Resmi Kalender Pendidikan Sekolah. Disarankan mencetak/unduh dalam format <b>Landscape</b>.</p>
                         <div class="flex gap-2 flex-wrap">
-                            <button onclick="downloadPDF('cetak-resmi')" class="bg-red-600 text-white px-4 py-2 rounded shadow-sm hover:bg-red-700 transition whitespace-nowrap">
-                                <i class="fas fa-file-pdf mr-1"></i> Unduh PDF
-                            </button>
                             <button onclick="window.print()" class="bg-gray-800 text-white px-4 py-2 rounded shadow-sm hover:bg-gray-700 transition whitespace-nowrap">
                                 <i class="fas fa-print mr-1"></i> Cetak Dokumen
                             </button>
@@ -652,8 +667,98 @@
                     </div>
                 </div>
 
+                <!-- TAMPILAN: MANAJEMEN USER (KHUSUS ADMIN) -->
+                <div id="view-users" class="page-view fade-in hidden">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                        <h2 class="text-xl font-bold text-gray-800">Manajemen Akun User</h2>
+                        <button onclick="openUserModal()" class="bg-brand-blue text-white px-4 py-2 rounded shadow-sm hover:bg-blue-700 transition">
+                            <i class="fas fa-user-plus mr-1"></i> Tambah User
+                        </button>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-gray-50 border-b">
+                                    <tr>
+                                        <th class="px-6 py-3 font-semibold text-gray-600">Username</th>
+                                        <th class="px-6 py-3 font-semibold text-gray-600">Password</th>
+                                        <th class="px-6 py-3 font-semibold text-gray-600">Role</th>
+                                        <th class="px-6 py-3 font-semibold text-gray-600">Nama Sekolah Terikat</th>
+                                        <th class="px-6 py-3 font-semibold text-gray-600 text-right">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="users-tbody" class="divide-y divide-gray-100">
+                                    <!-- Diisi oleh JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </main>
+    </div>
+
+    <!-- MODAL: LOGIN -->
+    <div id="modal-login" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center fade-in">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-sm mx-4 overflow-hidden">
+            <div class="bg-brand-blue p-6 text-center text-white">
+                <i class="fas fa-shield-alt text-4xl mb-2 text-brand-gold"></i>
+                <h3 class="font-bold text-xl">Otorisasi Sistem</h3>
+                <p class="text-xs text-blue-200 mt-1">Silakan login untuk mengakses menu ini</p>
+            </div>
+            <form id="form-login" onsubmit="handleLogin(event)" class="p-6">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                    <input type="text" id="login-username" required class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-brand-blue outline-none">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="login-password" required class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-brand-blue outline-none">
+                </div>
+                <div class="flex justify-between items-center gap-2">
+                    <button type="button" onclick="closeLoginModal()" class="w-1/3 px-4 py-2 border rounded-lg text-gray-600 hover:bg-gray-50 transition">Batal</button>
+                    <button type="submit" class="w-2/3 bg-brand-blue text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition shadow">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: TAMBAH/EDIT USER -->
+    <div id="modal-user" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center fade-in">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4 overflow-hidden">
+            <div class="flex justify-between items-center bg-gray-50 px-6 py-4 border-b">
+                <h3 class="font-bold text-gray-800" id="modal-user-title">Tambah User</h3>
+                <button onclick="closeUserModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-lg"></i></button>
+            </div>
+            <form id="form-user" onsubmit="saveUser(event)" class="p-6">
+                <input type="hidden" id="user-id">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Username *</label>
+                    <input type="text" id="user-username" required class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-brand-blue outline-none">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Password *</label>
+                    <input type="text" id="user-password" required class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-brand-blue outline-none">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Role Akses *</label>
+                    <select id="user-role" required class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-brand-blue outline-none">
+                        <option value="user">User Biasa</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Sekolah / Instansi *</label>
+                    <input type="text" id="user-school" required placeholder="Cth: SD Negeri 1 Nusantara" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-brand-blue outline-none">
+                </div>
+                <div class="flex justify-end gap-2">
+                    <button type="button" onclick="closeUserModal()" class="px-4 py-2 border rounded-lg text-gray-600 hover:bg-gray-50 transition">Batal</button>
+                    <button type="submit" class="bg-brand-blue text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">Simpan User</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- MODAL: TAMBAH/EDIT AGENDA -->
@@ -763,10 +868,16 @@
         let agendas = [];
         let currentYearOffset = 0; // Navigasi tahun kalender
         let currentSemester = 'all'; // Filter Semester: 'all', '1', '2'
+        
+        // --- STATE AUTHENTICATION ---
+        let appUsers = [];
+        let currentUser = null;
+        const PROTECTED_VIEWS = ['calendar', 'agenda', 'cetak-resmi', 'settings', 'users'];
 
         // --- INISIALISASI ---
         function initApp() {
             loadData();
+            updateAuthUI();
             setupUI();
             startClock();
             switchView('dashboard');
@@ -783,8 +894,31 @@
         // Memuat data dari LocalStorage secara aman menggunakan blok try-catch
         function loadData() {
             try {
+                // Memuat Users / Akun Login
+                const savedUsers = localStorage.getItem('kaldik_users');
+                if (savedUsers) {
+                    appUsers = JSON.parse(savedUsers);
+                } else {
+                    appUsers = [
+                        { id: generateId(), username: 'supriyadi', password: '291188', role: 'admin', schoolName: 'SD Negeri 1 Nusantara' },
+                        { id: generateId(), username: 'user_guru', password: '123', role: 'user', schoolName: 'SD Negeri 2 Teladan' }
+                    ];
+                    localStorage.setItem('kaldik_users', JSON.stringify(appUsers));
+                }
+
+                // Cek Session Berjalan
+                const sessionUser = localStorage.getItem('kaldik_current_user');
+                if (sessionUser) {
+                    currentUser = JSON.parse(sessionUser);
+                }
+
                 const savedSettings = localStorage.getItem('kaldik_settings');
                 schoolData = savedSettings ? JSON.parse(savedSettings) : { ...DEFAULT_SETTINGS };
+                
+                // Override nama sekolah jika user sedang login
+                if (currentUser) {
+                    schoolData.schoolName = currentUser.schoolName;
+                }
                 
                 const savedAgendas = localStorage.getItem('kaldik_agendas');
                 if (savedAgendas) {
@@ -923,6 +1057,19 @@
 
         // --- NAVIGASI HALAMAN ---
         function switchView(viewId) {
+            // Cek Proteksi Login
+            if (PROTECTED_VIEWS.includes(viewId) && !currentUser) {
+                openLoginModal();
+                showToast('Silakan login terlebih dahulu untuk mengakses menu ini.', 'error');
+                return; // Batalkan perpindahan view
+            }
+
+            // Proteksi Khusus Admin
+            if (viewId === 'users' && currentUser?.role !== 'admin') {
+                showToast('Akses ditolak. Menu ini khusus Administrator.', 'error');
+                return;
+            }
+
             document.querySelectorAll('.nav-item').forEach(el => {
                 el.classList.remove('bg-blue-800', 'text-brand-gold', 'border-r-4', 'border-brand-gold');
                 el.classList.add('text-gray-300');
@@ -946,7 +1093,8 @@
                 'agenda': 'Manajemen Agenda',
                 'stats': 'Statistik Hari Efektif',
                 'cetak-resmi': 'Cetak Resmi Kalender',
-                'settings': 'Pengaturan Sekolah'
+                'settings': 'Pengaturan Sekolah',
+                'users': 'Manajemen User'
             };
             document.getElementById('topbar-title').textContent = titles[viewId] || 'Kaldik SD';
 
@@ -973,6 +1121,7 @@
             if (viewId === 'agenda') renderAgendaList();
             if (viewId === 'stats') renderStats();
             if (viewId === 'cetak-resmi') renderCetakResmi();
+            if (viewId === 'users') renderUsers();
         }
 
         function toggleSidebar() {
@@ -1877,6 +2026,199 @@
             }
         }
 
+        // --- SISTEM AUTHENTICATION & MANAJEMEN USER ---
+        function updateAuthUI() {
+            const isAuth = currentUser !== null;
+            const isAdmin = isAuth && currentUser.role === 'admin';
+
+            // Atur Ikon Gembok di Sidebar
+            document.querySelectorAll('.auth-lock').forEach(icon => {
+                icon.style.display = isAuth ? 'none' : 'block';
+            });
+
+            // Atur Visibilitas Menu Manajemen User
+            const navUsers = document.getElementById('nav-users');
+            if (isAdmin) {
+                navUsers.classList.remove('hidden');
+                navUsers.classList.add('flex');
+            } else {
+                navUsers.classList.add('hidden');
+                navUsers.classList.remove('flex');
+            }
+
+            // Atur Header Login Info
+            if (isAuth) {
+                document.getElementById('btn-login').classList.add('hidden');
+                document.getElementById('user-info').classList.remove('hidden');
+                document.getElementById('user-info').classList.add('flex');
+                
+                document.getElementById('auth-username').textContent = currentUser.username;
+                document.getElementById('auth-role').textContent = currentUser.role === 'admin' ? 'Administrator' : 'User Biasa';
+            } else {
+                document.getElementById('btn-login').classList.remove('hidden');
+                document.getElementById('user-info').classList.add('hidden');
+                document.getElementById('user-info').classList.remove('flex');
+            }
+        }
+
+        function openLoginModal() {
+            document.getElementById('form-login').reset();
+            document.getElementById('modal-login').classList.remove('hidden');
+        }
+
+        function closeLoginModal() {
+            document.getElementById('modal-login').classList.add('hidden');
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('login-username').value;
+            const p = document.getElementById('login-password').value;
+
+            const user = appUsers.find(x => x.username === u && x.password === p);
+
+            if (user) {
+                currentUser = user;
+                localStorage.setItem('kaldik_current_user', JSON.stringify(currentUser));
+                
+                // Override school name based on user profile
+                schoolData.schoolName = currentUser.schoolName;
+                document.getElementById('set-school-name').value = currentUser.schoolName;
+                saveToStorage();
+                
+                updateAuthUI();
+                setupUI();
+                renderDashboard();
+                closeLoginModal();
+                showToast(`Selamat datang, ${user.username}!`, 'success');
+            } else {
+                showToast('Username atau password salah!', 'error');
+            }
+        }
+
+        function handleLogout() {
+            if (confirm('Yakin ingin keluar dari sistem?')) {
+                currentUser = null;
+                localStorage.removeItem('kaldik_current_user');
+                showToast('Anda telah logout, memuat ulang...', 'success');
+                
+                // Memuat ulang halaman agar state aplikasi benar-benar terkunci kembali ke mode awal
+                setTimeout(() => {
+                    window.location.reload();
+                }, 800);
+            }
+        }
+
+        // --- CRUD MANAJEMEN USER ---
+        function renderUsers() {
+            const tbody = document.getElementById('users-tbody');
+            tbody.innerHTML = '';
+            
+            appUsers.forEach(u => {
+                const badgeClass = u.role === 'admin' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700';
+                const roleName = u.role === 'admin' ? 'Admin' : 'User';
+                const preventDelete = u.username === 'supriyadi' ? 'disabled opacity-50 cursor-not-allowed' : '';
+                
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50 transition border-b border-gray-100">
+                        <td class="px-6 py-4 font-bold text-gray-800">${u.username}</td>
+                        <td class="px-6 py-4 text-gray-500 font-mono text-xs">${u.password}</td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 text-xs font-bold rounded-full ${badgeClass}">${roleName}</span>
+                        </td>
+                        <td class="px-6 py-4 text-gray-600">${u.schoolName}</td>
+                        <td class="px-6 py-4 text-right">
+                            <button onclick="editUser('${u.id}')" class="text-blue-500 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 p-2 rounded mr-1" title="Edit"><i class="fas fa-edit"></i></button>
+                            <button onclick="deleteUser('${u.id}')" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-2 rounded" title="Hapus" ${preventDelete}><i class="fas fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function openUserModal(id = null) {
+            const modal = document.getElementById('modal-user');
+            const form = document.getElementById('form-user');
+            const title = document.getElementById('modal-user-title');
+            
+            form.reset();
+            document.getElementById('user-id').value = '';
+
+            if (id) {
+                title.textContent = 'Edit User';
+                const user = appUsers.find(u => u.id === id);
+                if(user) {
+                    document.getElementById('user-id').value = user.id;
+                    document.getElementById('user-username').value = user.username;
+                    document.getElementById('user-password').value = user.password;
+                    document.getElementById('user-role').value = user.role;
+                    document.getElementById('user-school').value = user.schoolName;
+                }
+            } else {
+                title.textContent = 'Tambah User Baru';
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closeUserModal() {
+            document.getElementById('modal-user').classList.add('hidden');
+        }
+
+        function saveUser(e) {
+            e.preventDefault();
+            const id = document.getElementById('user-id').value;
+            const newUser = {
+                id: id || generateId(),
+                username: document.getElementById('user-username').value.trim(),
+                password: document.getElementById('user-password').value,
+                role: document.getElementById('user-role').value,
+                schoolName: document.getElementById('user-school').value.trim()
+            };
+
+            // Cek Duplikat Username
+            const isDuplicate = appUsers.some(u => u.username === newUser.username && u.id !== newUser.id);
+            if (isDuplicate) {
+                showToast('Username sudah digunakan!', 'error');
+                return;
+            }
+
+            if (id) {
+                const idx = appUsers.findIndex(u => u.id === id);
+                appUsers[idx] = newUser;
+                
+                // Jika sedang mengedit diri sendiri, perbarui session
+                if (currentUser && currentUser.id === id) {
+                    currentUser = newUser;
+                    localStorage.setItem('kaldik_current_user', JSON.stringify(currentUser));
+                    schoolData.schoolName = newUser.schoolName;
+                    saveToStorage();
+                    setupUI();
+                }
+                showToast('Data user berhasil diperbarui!', 'success');
+            } else {
+                appUsers.push(newUser);
+                showToast('User baru berhasil ditambahkan!', 'success');
+            }
+
+            localStorage.setItem('kaldik_users', JSON.stringify(appUsers));
+            closeUserModal();
+            renderUsers();
+        }
+
+        function deleteUser(id) {
+            const user = appUsers.find(u => u.id === id);
+            if (user && user.username === 'supriyadi') {
+                showToast('Super Admin tidak boleh dihapus!', 'error');
+                return;
+            }
+            if(confirm('Apakah Anda yakin ingin menghapus akun user ini?')) {
+                appUsers = appUsers.filter(u => u.id !== id);
+                localStorage.setItem('kaldik_users', JSON.stringify(appUsers));
+                showToast('Akun User berhasil dihapus.', 'success');
+                renderUsers();
+            }
+        }
+
         // --- UTILS DAN PENYIMPANAN ---
         function saveToStorage() {
             try {
@@ -1955,84 +2297,6 @@
             let table = document.getElementById(tableID);
             let wb = XLSX.utils.table_to_book(table, {sheet: "Matrik"});
             XLSX.writeFile(wb, `${filename}_${schoolData.academicYear.replace('/','-')}.xlsx`);
-        }
-
-        // --- UNDUH PDF FORMAL (html2pdf) ---
-        function downloadPDF(type) {
-            showToast('Sedang menyiapkan PDF, mohon tunggu...', 'info');
-            
-            // Mengamankan posisi scroll saat ini agar hasil PDF tidak terpotong
-            const originalScrollY = window.scrollY;
-            const originalScrollX = window.scrollX;
-            window.scrollTo(0, 0);
-            
-            // Buat kontainer sementara untuk di-render oleh html2pdf
-            const element = document.createElement('div');
-            
-            // Posisikan di titik paling atas namun diletakkan pada layer paling belakang
-            // Hal ini wajib agar html2canvas bisa merender elemen sepenuhnya tanpa menghasilkan layar blank
-            element.style.position = 'absolute';
-            element.style.top = '0';
-            element.style.left = '0';
-            element.style.zIndex = '-9999';
-            element.style.opacity = '1';
-            element.style.background = 'white';
-            element.style.color = 'black';
-            element.style.padding = '20px';
-            
-            // Paksa lebar untuk rendering rapi menyerupai kertas dokumen asli
-            element.style.width = type === 'cetak-resmi' ? '1350px' : '1024px'; 
-            
-            // Kloning Kop Surat agar ikut tercetak di bagian atas lembar PDF (HANYA jika bukan cetak-resmi)
-            // Cetak resmi sudah memiliki Kop Surat yang sangat lengkap di dalam kontennya sendiri
-            if (type !== 'cetak-resmi') {
-                const kopSurat = document.querySelector('.print-header-kop').cloneNode(true);
-                kopSurat.classList.remove('print-only', 'no-print');
-                kopSurat.style.display = 'block';
-                kopSurat.style.marginBottom = '20px';
-                element.appendChild(kopSurat);
-            }
-            
-            // Kloning Konten Utama (Kalender atau Cetak Resmi Tabel)
-            let contentId = type === 'calendar' ? 'view-calendar' : 'view-cetak-resmi';
-            const content = document.getElementById(contentId).cloneNode(true);
-            content.classList.remove('hidden', 'page-view');
-            
-            // Hapus elemen tombol-tombol navigasi dan UI non-cetak dari lembar PDF
-            content.querySelectorAll('.no-print').forEach(el => el.remove());
-            
-            element.appendChild(content);
-            document.body.appendChild(element);
-
-            const isLandscape = type === 'cetak-resmi';
-            
-            // Opsi Pemrosesan PDF formal dengan penyesuaian kualitas tinggi
-            const opt = {
-                margin:       [10, 10, 15, 10], // Margin atas, kiri, bawah, kanan
-                filename:     `Kalender_${type === 'calendar' ? 'Akademik' : 'Cetak_Resmi'}_${schoolData.academicYear.replace('/','-')}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { 
-                    scale: 2, // Resolusi tinggi retina-ready
-                    useCORS: true, // Izinkan cross-origin assets (seperti gambar logo luar)
-                    windowWidth: isLandscape ? 1350 : 1024,
-                    scrollY: 0,
-                    scrollX: 0,
-                    logging: false
-                },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: isLandscape ? 'landscape' : 'portrait' }
-            };
-
-            // Eksekusi Pembuatan PDF menggunakan html2pdf
-            html2pdf().set(opt).from(element).save().then(() => {
-                if (document.body.contains(element)) document.body.removeChild(element);
-                window.scrollTo(originalScrollX, originalScrollY); // Kembalikan ke posisi scroll semula
-                showToast('PDF berhasil diunduh.', 'success');
-            }).catch(err => {
-                if (document.body.contains(element)) document.body.removeChild(element);
-                window.scrollTo(originalScrollX, originalScrollY); // Kembalikan ke posisi scroll semula
-                showToast('Gagal mengunduh PDF.', 'error');
-                console.error('Error html2pdf:', err);
-            });
         }
     </script>
 </body>
