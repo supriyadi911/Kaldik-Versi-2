@@ -939,6 +939,16 @@
                 document.getElementById('sidebar').classList.add('-translate-x-full');
             }
 
+            // MENCEGAH KOP GANDA: Sembunyikan kop cetak umum bawaan (.print-header-kop) jika berada di halaman Cetak Resmi
+            const printHeaderKop = document.querySelector('.print-header-kop');
+            if (printHeaderKop) {
+                if (viewId === 'cetak-resmi') {
+                    printHeaderKop.classList.add('no-print');
+                } else {
+                    printHeaderKop.classList.remove('no-print');
+                }
+            }
+
             // Memanggil fungsi render sesuai dengan halaman
             if (viewId === 'dashboard') renderDashboard();
             if (viewId === 'calendar') renderCalendar();
@@ -1437,15 +1447,6 @@
             renderAgendaList();
         }
 
-        function deleteAgenda(id) {
-            if(confirm('Apakah Anda yakin ingin menghapus agenda ini?')) {
-                agendas = agendas.filter(a => a.id !== id);
-                saveToStorage();
-                showToast('Agenda dihapus.', 'success');
-                renderAgendaList();
-            }
-        }
-
         // --- STATISTIK HARI EFEKTIF ---
         function renderStats() {
             const startD = new Date(schoolData.startDate);
@@ -1940,12 +1941,15 @@
             // Paksa lebar untuk rendering rapi menyerupai kertas dokumen asli
             element.style.width = type === 'cetak-resmi' ? '1350px' : '1024px'; 
             
-            // Kloning Kop Surat agar ikut tercetak di bagian atas lembar PDF
-            const kopSurat = document.querySelector('.print-header-kop').cloneNode(true);
-            kopSurat.classList.remove('print-only');
-            kopSurat.style.display = 'block';
-            kopSurat.style.marginBottom = '20px';
-            element.appendChild(kopSurat);
+            // Kloning Kop Surat agar ikut tercetak di bagian atas lembar PDF (HANYA jika bukan cetak-resmi)
+            // Cetak resmi sudah memiliki Kop Surat yang sangat lengkap di dalam kontennya sendiri
+            if (type !== 'cetak-resmi') {
+                const kopSurat = document.querySelector('.print-header-kop').cloneNode(true);
+                kopSurat.classList.remove('print-only', 'no-print');
+                kopSurat.style.display = 'block';
+                kopSurat.style.marginBottom = '20px';
+                element.appendChild(kopSurat);
+            }
             
             // Kloning Konten Utama (Kalender atau Cetak Resmi Tabel)
             let contentId = type === 'calendar' ? 'view-calendar' : 'view-cetak-resmi';
