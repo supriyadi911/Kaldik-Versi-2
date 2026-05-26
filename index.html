@@ -190,7 +190,7 @@
                 </div>
             </header>
 
-            <!-- KOP SURAT (Hanya dicetak) -->
+            <!-- KOP SURAT UMUM BAWAAN (Hanya dicetak jika bukan di halaman cetak resmi) -->
             <div class="print-only print-header-kop w-full mt-4">
                 <h1 id="print-school-name" class="text-2xl font-bold uppercase mb-1">Nama Sekolah</h1>
                 <p id="print-school-address" class="text-sm mb-2">Alamat Sekolah</p>
@@ -467,7 +467,7 @@
                 <!-- TAMPILAN: CETAK RESMI -->
                 <div id="view-cetak-resmi" class="page-view fade-in hidden">
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 no-print gap-4">
-                        <p class="text-gray-600 text-sm md:text-base">Format Resmi Kalender Pendidikan Sekolah (Tabel 1 - 31). Disarankan cetak dalam format <b>Landscape</b>.</p>
+                        <p class="text-gray-600 text-sm md:text-base">Format Resmi Kalender Pendidikan Sekolah. Disarankan mencetak/unduh dalam format <b>Landscape</b>.</p>
                         <div class="flex gap-2 flex-wrap">
                             <button onclick="downloadPDF('cetak-resmi')" class="bg-red-600 text-white px-4 py-2 rounded shadow-sm hover:bg-red-700 transition whitespace-nowrap">
                                 <i class="fas fa-file-pdf mr-1"></i> Unduh PDF
@@ -478,8 +478,8 @@
                         </div>
                     </div>
 
-                    <div class="bg-white p-2 md:p-8 rounded-xl shadow-sm border border-gray-100 print:shadow-none print:border-none">
-                        <!-- Kop Surat Resmi -->
+                    <div class="bg-white p-2 md:p-8 rounded-xl shadow-sm border border-gray-100 print:shadow-none print:border-none print:p-0">
+                        <!-- Kop Surat Resmi Instansi/Sekolah -->
                         <div class="flex items-center border-b-4 border-double border-black pb-4 mb-4">
                             <div class="w-20 md:w-24 shrink-0 flex justify-center">
                                 <img id="cetak-gov-logo" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Logo Dinas" class="max-w-full h-auto hidden">
@@ -494,6 +494,7 @@
                             </div>
                         </div>
 
+                        <!-- HALAMAN 1: TABEL MATRIK KALENDER -->
                         <div class="text-center mb-6">
                             <h3 class="text-lg font-bold underline uppercase">KALENDER PENDIDIKAN TAHUN AJARAN <span id="cetak-ta"></span></h3>
                             <p class="text-sm">Nomor: <span id="cetak-nosurat">-</span></p>
@@ -516,33 +517,47 @@
                         </div>
 
                         <!-- Keterangan Legend Cetak -->
-                        <div class="flex flex-wrap gap-3 text-[10px] mb-8" id="cetak-legend">
+                        <div class="flex flex-wrap gap-3 text-[10px]" id="cetak-legend">
                             <!-- Diisi oleh JS -->
                         </div>
 
-                        <!-- Daftar Agenda Kegiatan Resmi -->
-                        <h4 class="font-bold text-sm mb-2 bg-gray-200 p-1 uppercase tracking-wider">Daftar Kegiatan & Agenda Akademik</h4>
-                        <div class="overflow-x-auto mb-8 print-break-inside-avoid">
-                            <table class="w-full table-resmi border-collapse" id="tabel-resmi-agenda">
-                                <!-- Diisi oleh JS -->
-                            </table>
-                        </div>
-
-                        <!-- Tanda Tangan -->
-                        <div class="flex justify-between px-4 md:px-16 mt-8 pt-8">
-                            <div class="text-center text-sm">
-                                <p>Mengetahui,</p>
-                                <p>Kepala Sekolah</p>
-                                <br><br><br>
-                                <p class="font-bold underline uppercase" id="cetak-ks-nama">NAMA KEPSEK</p>
-                                <p>NIP. <span id="cetak-ks-nip">-</span></p>
+                        <!-- HALAMAN 2: DAFTAR AGENDA KEGIATAN RESMI & TANDA TANGAN -->
+                        <div style="page-break-before: always; break-before: page;" class="pt-4 mt-12 print:mt-0 print:pt-8">
+                            <h4 class="font-bold text-sm mb-4 bg-gray-200 p-1.5 uppercase tracking-wider text-center border border-black">Daftar Kegiatan & Agenda Akademik</h4>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 items-start print-break-inside-avoid">
+                                <!-- Tabel Agenda Semester 1 -->
+                                <div>
+                                    <h5 class="font-bold text-xs bg-brand-blue text-white p-1 text-center border border-black border-b-0">SEMESTER 1 (GANJIL)</h5>
+                                    <table class="w-full table-resmi border-collapse" id="tabel-resmi-agenda-sem1">
+                                        <!-- Diisi oleh JS -->
+                                    </table>
+                                </div>
+                                <!-- Tabel Agenda Semester 2 -->
+                                <div>
+                                    <h5 class="font-bold text-xs bg-brand-blue text-white p-1 text-center border border-black border-b-0">SEMESTER 2 (GENAP)</h5>
+                                    <table class="w-full table-resmi border-collapse" id="tabel-resmi-agenda-sem2">
+                                        <!-- Diisi oleh JS -->
+                                    </table>
+                                </div>
                             </div>
-                            <div class="text-center text-sm">
-                                <p id="cetak-tanggal-ttd">Bandar Lampung, 15 Juli 2026</p>
-                                <p>Wali Kelas</p>
-                                <br><br><br>
-                                <p class="font-bold underline uppercase" id="cetak-wk-nama">NAMA WALI KELAS</p>
-                                <p>NIP. <span id="cetak-wk-nip">-</span></p>
+
+                            <!-- Tanda Tangan (di bagian bawah Halaman 2) -->
+                            <div class="flex justify-between px-4 md:px-16 mt-12 pt-4 print-break-inside-avoid">
+                                <div class="text-center text-sm">
+                                    <p>Mengetahui,</p>
+                                    <p>Kepala Sekolah</p>
+                                    <br><br><br><br>
+                                    <p class="font-bold underline uppercase" id="cetak-ks-nama">NAMA KEPSEK</p>
+                                    <p>NIP. <span id="cetak-ks-nip">-</span></p>
+                                </div>
+                                <div class="text-center text-sm">
+                                    <p id="cetak-tanggal-ttd">Bandar Lampung, 15 Juli 2026</p>
+                                    <p>Wali Kelas</p>
+                                    <br><br><br><br>
+                                    <p class="font-bold underline uppercase" id="cetak-wk-nama">NAMA WALI KELAS</p>
+                                    <p>NIP. <span id="cetak-wk-nip">-</span></p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -833,7 +848,7 @@
                 document.getElementById('sb-school-icon').classList.remove('hidden');
             }
 
-            // Menyiapkan data cetak
+            // Menyiapkan data cetak umum
             document.getElementById('print-school-name').textContent = schoolData.schoolName;
             document.getElementById('print-school-address').textContent = schoolData.schoolAddress;
             document.getElementById('print-academic-year').textContent = schoolData.academicYear;
@@ -943,9 +958,11 @@
             const printHeaderKop = document.querySelector('.print-header-kop');
             if (printHeaderKop) {
                 if (viewId === 'cetak-resmi') {
-                    printHeaderKop.classList.add('no-print');
+                    printHeaderKop.classList.remove('print-only');
+                    printHeaderKop.classList.add('hidden');
                 } else {
-                    printHeaderKop.classList.remove('no-print');
+                    printHeaderKop.classList.add('print-only');
+                    printHeaderKop.classList.remove('hidden');
                 }
             }
 
@@ -1447,6 +1464,15 @@
             renderAgendaList();
         }
 
+        function deleteAgenda(id) {
+            if(confirm('Apakah Anda yakin ingin menghapus agenda ini?')) {
+                agendas = agendas.filter(a => a.id !== id);
+                saveToStorage();
+                showToast('Agenda dihapus.', 'success');
+                renderAgendaList();
+            }
+        }
+
         // --- STATISTIK HARI EFEKTIF ---
         function renderStats() {
             const startD = new Date(schoolData.startDate);
@@ -1613,7 +1639,7 @@
             sem2HTML = sem2HTML.replace('</tbody>', grandTotalRow + '</tbody>');
             document.getElementById('tabel-resmi-sem2').innerHTML = sem2HTML;
 
-            // Merender Tabel Agenda/Kegiatan Resmi di halaman Cetak
+            // Merender Tabel Agenda/Kegiatan Resmi di halaman Cetak (Dibagi Kiri-Kanan)
             renderAgendaCetakResmi();
         }
 
@@ -1743,15 +1769,17 @@
             return html;
         }
 
-        // Fungsi perender daftar agenda keagamaan dan akademik pada format Cetak Resmi
+        // Fungsi perender daftar agenda keagamaan dan akademik pada format Cetak Resmi (Dibelah 2)
         function renderAgendaCetakResmi() {
-            const agendaTable = document.getElementById('tabel-resmi-agenda');
-            let html = `
+            const tableSem1 = document.getElementById('tabel-resmi-agenda-sem1');
+            const tableSem2 = document.getElementById('tabel-resmi-agenda-sem2');
+            
+            const theadHTML = `
                 <thead class="bg-gray-100 font-bold">
                     <tr>
-                        <th class="w-12 py-2">No</th>
-                        <th class="w-40 py-2">Bulan</th>
-                        <th class="py-2 text-left px-4">Agenda / Kegiatan Sekolah</th>
+                        <th class="w-8 py-1.5">No</th>
+                        <th class="w-20 py-1.5">Bulan</th>
+                        <th class="py-1.5 text-left px-3">Agenda / Kegiatan Sekolah</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1762,38 +1790,52 @@
                 return a.start >= schoolData.startDate && a.start <= schoolData.endDate;
             }).sort((a, b) => a.start.localeCompare(b.start));
 
-            if (activeAgendas.length === 0) {
-                html += `
-                    <tr>
-                        <td colspan="3" class="py-4 text-center text-gray-500 italic">Belum ada agenda/kegiatan sekolah dasar yang ditambahkan.</td>
-                    </tr>
-                `;
-            } else {
-                activeAgendas.forEach((a, idx) => {
-                    const dateStartObj = new Date(a.start);
-                    const labelBulanTahun = `${MONTH_NAMES[dateStartObj.getMonth()]} ${dateStartObj.getFullYear()}`;
-                    const labelTanggalFull = a.start === a.end ? formatDateIndo(a.start) : `${formatDateIndo(a.start)} s.d. ${formatDateIndo(a.end)}`;
-                    
-                    const catLabel = CATEGORIES[a.type]?.label || "Kegiatan";
-                    const locationText = a.location ? ` | Tempat: ${a.location}` : "";
-                    const picText = a.pic ? ` | PJ: ${a.pic}` : "";
+            let htmlSem1 = theadHTML;
+            let htmlSem2 = theadHTML;
+            let countSem1 = 1;
+            let countSem2 = 1;
 
-                    html += `
+            if (activeAgendas.length === 0) {
+                htmlSem1 += `<tr><td colspan="3" class="py-4 text-center text-gray-500 italic">Belum ada agenda di Semester 1.</td></tr>`;
+                htmlSem2 += `<tr><td colspan="3" class="py-4 text-center text-gray-500 italic">Belum ada agenda di Semester 2.</td></tr>`;
+            } else {
+                activeAgendas.forEach((a) => {
+                    const dateStartObj = new Date(a.start);
+                    const month = dateStartObj.getMonth();
+                    
+                    // Juli (6) hingga Desember (11) adalah Semester 1
+                    const isSem1 = (month >= 6 && month <= 11);
+
+                    const labelBulanTahun = `${MONTH_NAMES[month].substring(0,3)} '${dateStartObj.getFullYear().toString().substring(2,4)}`;
+                    const labelTanggalFull = a.start === a.end ? formatDateIndo(a.start) : `${formatDateIndo(a.start)} s.d. ${formatDateIndo(a.end)}`;
+
+                    const rowHTML = `
                         <tr class="hover:bg-gray-50">
-                            <td>${idx + 1}</td>
-                            <td class="font-semibold text-brand-blue">${labelBulanTahun}</td>
-                            <td class="text-left px-4 py-2">
-                                <div class="font-bold text-gray-800 text-[11px]">${a.title} <span class="text-[9px] font-normal italic text-gray-500">(${catLabel})</span></div>
-                                <div class="text-[9px] text-gray-500 mt-0.5">${labelTanggalFull}${locationText}${picText}</div>
-                                ${a.desc ? `<div class="text-[9px] text-gray-400 italic mt-0.5">${a.desc}</div>` : ''}
+                            <td class="py-1">${isSem1 ? countSem1++ : countSem2++}</td>
+                            <td class="font-semibold text-brand-blue py-1">${labelBulanTahun}</td>
+                            <td class="text-left px-3 py-1.5">
+                                <div class="font-bold text-gray-800 text-[10px] leading-tight">${a.title}</div>
+                                <div class="text-[9px] text-gray-600 mt-0.5">${labelTanggalFull}</div>
                             </td>
                         </tr>
                     `;
+
+                    if (isSem1) {
+                        htmlSem1 += rowHTML;
+                    } else {
+                        htmlSem2 += rowHTML;
+                    }
                 });
+
+                if (countSem1 === 1) htmlSem1 += `<tr><td colspan="3" class="py-4 text-center text-gray-500 italic">Belum ada agenda di Semester 1.</td></tr>`;
+                if (countSem2 === 1) htmlSem2 += `<tr><td colspan="3" class="py-4 text-center text-gray-500 italic">Belum ada agenda di Semester 2.</td></tr>`;
             }
 
-            html += `</tbody>`;
-            agendaTable.innerHTML = html;
+            htmlSem1 += `</tbody>`;
+            htmlSem2 += `</tbody>`;
+
+            tableSem1.innerHTML = htmlSem1;
+            tableSem2.innerHTML = htmlSem2;
         }
 
         // --- PENGATURAN / SETELAN ---
