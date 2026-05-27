@@ -175,35 +175,44 @@
                     <h2 id="topbar-title" class="text-xl font-bold text-gray-800">Dashboard</h2>
                 </div>
                 
-                <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-3 sm:space-x-5">
                     <!-- Filter Semester Global -->
-                    <div class="flex items-center space-x-2">
-                        <label for="global-semester" class="text-xs font-bold text-gray-500 uppercase tracking-wider hidden sm:inline">Semester:</label>
-                        <select id="global-semester" onchange="changeSemester(this.value)" class="border rounded-lg px-3 py-1.5 text-sm bg-white focus:ring-2 focus:ring-brand-blue outline-none font-semibold text-brand-blue shadow-sm">
+                    <div class="hidden sm:flex items-center bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 transition hover:bg-gray-100">
+                        <i class="fas fa-filter text-gray-400 text-xs mr-2"></i>
+                        <select id="global-semester" onchange="changeSemester(this.value)" class="text-sm bg-transparent outline-none font-semibold text-brand-blue cursor-pointer appearance-none pr-4" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%231e3a8a%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right center; background-size: 8px auto;">
                             <option value="all">Semua Semester</option>
                             <option value="1">Semester 1 (Ganjil)</option>
                             <option value="2">Semester 2 (Genap)</option>
                         </select>
                     </div>
 
-                    <div class="hidden lg:flex items-center text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
-                        <i class="fas fa-cloud-sun text-yellow-500 mr-2"></i> Cerah, 28°C
-                    </div>
-                    <div class="flex items-center text-sm font-bold text-brand-blue bg-blue-50 px-3 py-1 rounded-full">
-                        <i class="far fa-clock mr-2"></i> <span id="realtime-clock">00:00:00</span>
+                    <!-- Indikator Database & Jam Realtime -->
+                    <div class="hidden md:flex items-center space-x-4 border-r border-gray-200 pr-5">
+                        <div id="db-status" class="flex items-center text-xs font-semibold text-gray-500 cursor-help" title="Status Database Google Sheets">
+                            <span class="w-2.5 h-2.5 rounded-full bg-red-500 mr-2 relative flex items-center justify-center" id="db-indicator">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75 hidden" id="db-ping"></span>
+                            </span>
+                            <span id="db-text">Offline</span>
+                        </div>
+                        <div class="flex items-center text-sm font-medium text-gray-600">
+                            <i class="far fa-clock text-gray-400 mr-1.5"></i> <span id="realtime-clock">00:00:00</span>
+                        </div>
                     </div>
                     
                     <!-- Login / User Info -->
-                    <div id="auth-section" class="flex items-center ml-2 border-l pl-4">
-                        <button id="btn-login" onclick="openLoginModal()" class="text-sm bg-brand-blue text-white px-4 py-1.5 rounded shadow hover:bg-blue-700 transition">
-                            <i class="fas fa-sign-in-alt mr-1"></i> Login
+                    <div id="auth-section" class="flex items-center">
+                        <button id="btn-login" onclick="openLoginModal()" class="text-sm font-medium border border-brand-blue text-brand-blue px-4 py-1.5 rounded-lg hover:bg-brand-blue hover:text-white transition flex items-center">
+                            <i class="fas fa-sign-in-alt mr-2"></i> Login
                         </button>
                         <div id="user-info" class="hidden items-center space-x-3">
                             <div class="text-right hidden sm:block">
-                                <p class="text-xs font-bold text-gray-800 leading-tight" id="auth-username">User</p>
-                                <p class="text-[10px] text-gray-500 leading-tight" id="auth-role">Role</p>
+                                <p class="text-sm font-bold text-gray-800 leading-none" id="auth-username">User</p>
+                                <p class="text-[10px] text-gray-500 font-semibold uppercase tracking-wider mt-1" id="auth-role">Role</p>
                             </div>
-                            <button onclick="handleLogout()" class="text-red-500 hover:text-red-700 bg-red-50 p-1.5 rounded" title="Logout">
+                            <div class="w-9 h-9 rounded-full bg-brand-light text-white flex items-center justify-center shadow-sm">
+                                <i class="fas fa-user text-sm"></i>
+                            </div>
+                            <button onclick="handleLogout()" class="text-gray-400 hover:text-red-500 hover:bg-red-50 w-8 h-8 rounded-full flex items-center justify-center transition" title="Logout">
                                 <i class="fas fa-sign-out-alt"></i>
                             </button>
                         </div>
@@ -846,6 +855,10 @@
 
         const MONTH_NAMES = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
+        // --- KONFIGURASI DATABASE GOOGLE SHEETS ---
+        // GANTI URL DI BAWAH INI DENGAN URL WEB APP MILIK ANDA HASIL DEPLOY APPS SCRIPT
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbysHBmCGlvlC-tboUbsdflqqvyG9wSmFHlATJgFcWdP2KAlD50D1SqS0JagD9mvcQmaHQ/exec';
+
         const DEFAULT_SETTINGS = {
             schoolName: 'SD Negeri 1 Nusantara',
             schoolAddress: 'Jl. Pendidikan No. 1, Bandar Lampung, Indonesia',
@@ -876,7 +889,11 @@
 
         // --- INISIALISASI ---
         function initApp() {
+            updateDbStatus('connecting'); // Set status mencoba menyambungkan awal
+            
             loadData();
+            syncFromDatabase(); // Menarik data terbaru dari Google Sheets secara background
+            
             updateAuthUI();
             setupUI();
             startClock();
@@ -2224,9 +2241,110 @@
             try {
                 localStorage.setItem('kaldik_settings', JSON.stringify(schoolData));
                 localStorage.setItem('kaldik_agendas', JSON.stringify(agendas));
+                
+                // Secara otomatis backup ke Database Cloud saat local tersimpan
+                syncToDatabase();
             } catch (e) {
                 console.warn('Gagal menyimpan ke LocalStorage:', e);
                 showToast('Gagal menyimpan data (Storage penuh/terblokir).', 'error');
+            }
+        }
+
+        // --- SISTEM SINKRONISASI CLOUD DATABASE ---
+        
+        // Memperbarui UI Titik Indikator Database
+        function updateDbStatus(status) {
+            const indicator = document.getElementById('db-indicator');
+            const text = document.getElementById('db-text');
+            const ping = document.getElementById('db-ping');
+            
+            if (!indicator || !text) return;
+            
+            ping.classList.add('hidden');
+            indicator.className = 'w-2.5 h-2.5 rounded-full mr-2 relative flex items-center justify-center';
+
+            if (status === 'online') {
+                indicator.classList.add('bg-green-500');
+                text.textContent = 'Terhubung';
+                text.classList.replace('text-gray-600', 'text-green-700');
+            } else if (status === 'connecting') {
+                indicator.classList.add('bg-yellow-500');
+                ping.classList.remove('hidden');
+                ping.classList.replace('bg-red-400', 'bg-yellow-400');
+                text.textContent = 'Menyinkronkan...';
+                text.classList.replace('text-gray-600', 'text-yellow-700');
+            } else {
+                indicator.classList.add('bg-red-500');
+                text.textContent = 'Offline (Lokal)';
+                text.classList.replace('text-green-700', 'text-gray-600');
+                text.classList.replace('text-yellow-700', 'text-gray-600');
+            }
+        }
+
+        // Menarik Data dari Spreadsheet
+        async function syncFromDatabase() {
+            if (!GAS_URL || GAS_URL.trim() === '') {
+                updateDbStatus('offline');
+                return;
+            }
+
+            try {
+                const response = await fetch(GAS_URL);
+                const data = await response.json();
+                
+                if (data) {
+                    if (data.settings && Object.keys(data.settings).length > 0) schoolData = data.settings;
+                    if (data.agendas && data.agendas.length > 0) agendas = data.agendas;
+                    if (data.users && data.users.length > 0) {
+                        appUsers = data.users;
+                        localStorage.setItem('kaldik_users', JSON.stringify(appUsers));
+                    }
+
+                    // Terapkan data baru ke cache lokal & Render Ulang
+                    localStorage.setItem('kaldik_settings', JSON.stringify(schoolData));
+                    localStorage.setItem('kaldik_agendas', JSON.stringify(agendas));
+                    
+                    setupUI();
+                    const activeNav = document.querySelector('.nav-item.bg-blue-800');
+                    if (activeNav) switchView(activeNav.id.replace('nav-', ''));
+                    
+                    updateDbStatus('online');
+                }
+            } catch (error) {
+                console.warn('Gagal sinkronisasi data dari Google Sheets:', error);
+                updateDbStatus('offline');
+            }
+        }
+
+        // Menyimpan Data ke Spreadsheet
+        async function syncToDatabase() {
+            if (!GAS_URL || GAS_URL.trim() === '') return;
+            
+            updateDbStatus('connecting');
+            
+            const payload = {
+                action: 'syncAll',
+                settings: schoolData,
+                agendas: agendas,
+                users: appUsers
+            };
+
+            try {
+                // Mengirim payload POST ke gas API
+                const response = await fetch(GAS_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                if(result.status === 'success') {
+                    setTimeout(() => updateDbStatus('online'), 800);
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.warn('Gagal mendorong ke cloud database:', error);
+                updateDbStatus('offline');
             }
         }
 
